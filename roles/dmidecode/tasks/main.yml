@@ -1,0 +1,29 @@
+---
+
+# ensuring pip is installed
+- include_role:
+    name: install-pip
+
+# Checking if dmide is present
+- name: Verify Dmidecode
+  package:
+    name: dmidecode
+    state: present
+
+- name: Install dependencies
+  pip: name={{ item }} state=present
+  with_items:
+    - "{{ dmide_dependencies }}"
+
+- name: Copy the script
+  copy:
+    src: dmide_to_json.py
+    dest: /tmp/dmide_to_json.py
+
+- name: Run the script
+  command: python /tmp/dmide_to_json.py
+  become: true
+  register: dmide_json
+
+- name: delete script
+  file: state=absent path=/tmp/dmide_to_json.py

@@ -15,10 +15,27 @@ def _parse(dmide_fullinput):
         split_lines = record.split('\n')
         for x in range(len(split_lines)):
             split_lines[x] = split_lines[x].encode('ascii', 'ignore')
+            split_lines[x] = _re.sub(r":\s\s+",": ", split_lines[x])
+            split_lines[x] = _re.sub(r"\s\s+","", split_lines[x])
         if split_lines[0]!="" and len(split_lines)>=2:
+            split_lines[0] = split_lines[0].replace(' ','_')
             if split_lines[0] not in output_data:
                 output_data[split_lines[0]] = []
-            current_dict = dict(s.split(': ') for s in split_lines[1:])
+            current_dict = {}
+            # splitting only on first occurence as some fields can have multiple
+            # example
+            # OEM Strings
+        	# String 1: PSF:
+        	# String 2: Product ID: 670635-S01
+            for s in split_lines[1:]:
+                if ': ' in s:
+                    key_val = s.split(': ',1)
+                else:
+                    continue
+                if len(key_val) <= 1:
+                    key_val.append("None")
+                current_dict[key_val[0].replace(' ','_')]=key_val[1]
+            #current_dict = dict(s.split(': ') for s in split_lines[1:])
             output_data[split_lines[0]].append(current_dict)
     print json.dumps(output_data, indent=1)
     return output_data
@@ -40,7 +57,7 @@ def _execute_cmd(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Dmide code to )json")
+        description="Dmidecode output in json")
     parser.add_argument(
         '-t', '--type', dest="types", nargs='+'
     )

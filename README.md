@@ -6,11 +6,11 @@ To collect dmidecode on a remote node in a json format
 
 To collect dmidecode information on a remote node in json format
 
-1 Create a hosts file 
-2 Update remote_user in main.yml if the user is not root
-3 run `ansible-playbook -i hosts main.yml` 
-4 use -v if you want to see the output 
-5 add a role to either view the var like debug if needed
+1. Create a hosts file 
+2. Update remote_user in main.yml if the user is not root
+3. run `ansible-playbook -i hosts main.yml` 
+4. use -v if you want to see the output 
+5. add a role to either view the var like debug if needed
 
 ## Running the python script directly
 
